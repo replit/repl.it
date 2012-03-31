@@ -5,6 +5,7 @@ var fs = require('fs'),
     path = require('path'),
     url = require('url'),
     spawn = require('child_process').spawn,
+    queryString = require('querystring'),
     port = process.argv[2] || 8888;
 
 var CONTENT_TYPES = {
@@ -27,10 +28,46 @@ function textResponse(res, code, txt) {
   res.end(txt);
 }
 
+var waiting = {};
+
 var httpCb = function (req, res) {
   var uri = url.parse(req.url).pathname,
       filename = path.join(process.cwd(), uri);
       
+  var m;
+  if (m = uri.match(/(?:\/jsrepl)?\/emscripten\/input\/(\d+)/)) {
+    if (req.method === 'GET') {
+      waiting[m[1]] = {
+        req: req,
+        res: res
+      };
+      req.on('close', function () {
+        delete waiting[m[1]];
+      });
+    } else  {
+      var body = [];
+      req.on('data', function (data) {
+        body.push(data);
+      });
+      req.on('end', function () {
+        var d = queryString.parse(body.join('')),
+            waiterRes = waiting[m[1]] && waiting[m[1]].res;
+
+        if (waiterRes) {
+          waiterRes.writeHead(200, {'Content-Type': 'text/plain'});
+          waiterRes.end(d.input);
+          res.writeHead(200, {'Content-Type': 'text/plain'});
+          delete waiting[m[1]];
+          res.end('success');
+        } else {
+          res.writeHead(200, {'Content-Type': 'text/plain'});
+          res.end('fail');
+        }
+      });
+    }
+    return;
+  }
+
   // HACK: Mobile browsers get special treatment!
   if (req.headers['user-agent'] &&
       req.headers['user-agent'].match(/iPhone|iPad|iPod|Android/i)) {

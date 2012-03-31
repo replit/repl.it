@@ -6,11 +6,17 @@ $ = jQuery
 $.extend REPLIT,
   Init: ->
     @jsrepl = new JSREPL {
-      InputCallback: $.proxy @InputCallback, @
-      OutputCallback: $.proxy @OutputCallback, @
-      ResultCallback: $.proxy @ResultCallback, @
-      ErrorCallback: $.proxy @ErrorCallback, @
-      LoadProgressCallback: $.proxy @OnProgress, @
+      input: $.proxy @InputCallback, @
+      output: $.proxy @OutputCallback, @
+      result: $.proxy @ResultCallback, @
+      error: $.proxy @ErrorCallback, @
+      progress: $.proxy @OnProgress, @
+      timeout:
+        time: 15000,
+        callback: =>
+          a = confirm 'The program is taking too long to finish. Do you want to stop it?'
+          @LoadLanguage @current_lang.system_name if a
+          return a
     }
 
     # Init console.
@@ -36,7 +42,7 @@ $.extend REPLIT,
   # Load a given language by name.
   LoadLanguage: (lang_name, callback=$.noop) ->
     @$this.trigger 'language_loading', [lang_name]
-    @current_lang = @jsrepl.GetLangConfig lang_name.toLowerCase()
+    @current_lang = @jsrepl.getLangConfig lang_name.toLowerCase()
     # Hold the name for saving and such.
     @current_lang.system_name = lang_name
 
@@ -84,7 +90,7 @@ $.extend REPLIT,
       @jqconsole.MoveToEnd();
 
     # Load the language engine from jsREPL.
-    @jsrepl.LoadLanguage lang_name.toLowerCase(), =>
+    @jsrepl.loadLanguage lang_name.toLowerCase(), =>
       # Continue only when the ace mode retrieval is done.
       $.when(ace_mode_ajax).then =>
         @StartPrompt()
@@ -134,15 +140,14 @@ $.extend REPLIT,
 
   Evaluate: (command) ->
     if command
-      @jsrepl.Evaluate command
+      @jsrepl.eval command
       @$this.trigger 'eval', [command]
     else
       @StartPrompt()
 
   # Shows a command prompt in the console and waits for input.
   StartPrompt: ->
-    line_checker = $.proxy(@jsrepl.CheckLineEnd, @jsrepl)
-    @jqconsole.Prompt true, $.proxy(@Evaluate, @), line_checker, true
+    @jqconsole.Prompt true, $.proxy(@Evaluate, @), @jsrepl.checkLineEnd, true
 
 $ ->
   REPLIT.Init()
