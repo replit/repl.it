@@ -62,6 +62,24 @@ LANG_TEMPLATE =
 
     return html.join ''
 
+LANGUAGES = {
+  'ruby' : 'Ruby',
+  'python' : 'Python',
+  'lua' : 'Lua',
+  'scheme' : 'Scheme',
+  'emoticon' : 'Emoticon', 
+  'brainfuck' : 'Brainfuck', 
+  'lolcode' : 'LOLCODE', 
+  'unlambda' : 'Unlambda', 
+  'bloop' : 'Bloop', 
+  'javascript' : 'JavaScript', 
+  'traceur' : 'Traceur', 
+  'move' : 'Move', 
+  'kaffeine' : 'Kaffeine', 
+  'coffeescript' : 'CoffeeScript', 
+  'roy' : 'Roy'
+}
+
 PAGES =
   workspace:
     id: 'content-workspace'
@@ -244,6 +262,26 @@ $ ->
           @$container.stop true, true
           REPLIT.changing_page = false
         REPLIT.OpenPage new_page
+
+  # react to language calling on default
+  REPLIT.$this.bind 'hashchange:2', (_, lang_name) ->
+    REPLIT.OpenPage 'workspace'
+    return true
+
+    console.log "works"
+    REPLIT.current_lang_name = lang_name
+    if lang_name of LANGUAGES
+      REPLIT.current_lang_name = LANGUAGES[lang_name] 
+      console.log REPLIT.current_lang_name
+      if REPLIT.changing_page
+        # Interrupt current page switching animation.
+        $('.page').stop true, true
+        @$container.stop true, true
+        REPLIT.changing_page = false
+
+      REPLIT.OpenPage 'workspace', =>
+        REPLIT.LoadLanguage REPLIT.current_lang_name
+
 
   # Since we will be doing lots of animation and syncing, we better cache the
   # jQuery elements.

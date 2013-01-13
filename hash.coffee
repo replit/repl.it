@@ -40,14 +40,19 @@ $(window).bind 'load', ->
   REPLIT.setHash initial_hash
   hash_check = ->
     hash = window.location.hash.slice 1
-    hash_1 = hash.split(':')[0]
-    hash_2 = hash.split(':')[1]
+    hash_splitted = hash.split(':')
+    hash_1 = hash_splitted[0]
+    hash_2 = hash_splitted[1]
+    if hash_splitted.length == 3
+      REPLIT.$this.trigger 'hashchange:2', [hash_splitted[2]] 
+      return true
     if hash_states[0] isnt hash_1
       hash_states[0] = hash_1
       REPLIT.$this.trigger 'hashchange:0', [hash_1]
     if hash_states[1] isnt hash_2
       hash_states[1] = hash_2
       REPLIT.$this.trigger 'hashchange:1', [hash_2]
+    
     return true
       
   if popStateSupported
