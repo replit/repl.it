@@ -45,7 +45,7 @@ Dependencies
 
 #### [npm](http://npmjs.org/)
 
-    curl http://npmjs.org/install.sh | sh
+    curl https://npmjs.org/install.sh | sh
    
 #### [CoffeeScript](http://jashkenas.github.com/coffee-script/)
   
