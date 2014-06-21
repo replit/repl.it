@@ -316,7 +316,7 @@ $.extend REPLIT,
     @$editor.css 'height', @$editorContainer.innerHeight() - editor_vpadding
 
     # Call to Ace editor resize.
-    @editor.resize() if not @ISMOBILE
+    @$editor.resize() if not @ISMOBILE
 
   changeTitle: (title) ->
     $title = $ '#title'
