@@ -165,6 +165,13 @@ $ ->
       $savebox.find('li.facebook a').replaceWith SHARE_TEMPLATE.facebook()
       $savebox.find('li.gplus a').replaceWith SHARE_TEMPLATE.gplus()
       $savebox.find('input').val window.location.href
+      iframe_val = """
+        <iframe width="100%" height="300" src="#{window.location.href}?embed=true" frameborder="0"></iframe>
+      """
+      $savebox.find('textarea').val iframe_val
+
+      preview_link = "/embed-preview.html?embedded=#{encodeURIComponent(iframe_val)}"
+      $savebox.find('#save-box-embed-test').attr('href', preview_link)
       $savebox.find('.downloads a.editor').attr 'href', "/download/editor/#{session_id}/#{revision_id}/"
       $savebox.find('.downloads a.repl').attr 'href', "/download/repl/#{session_id}/#{revision_id}/"
       $savebox.slideDown()
@@ -183,6 +190,7 @@ $ ->
   bindSaveButton()
 
   $('#save-box input').click -> $(this).select()
+  $('#save-box textarea').click -> $(this).select()
   # When any command is evaled, save it in the eval_history array of the session
   # object, in order to send it to the server on save.
   REPLIT.$this.bind 'eval', (e, command) ->
