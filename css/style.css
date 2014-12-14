@@ -1092,7 +1092,7 @@ and (max-device-width : 480px) {
 /* Save */
 
 #save-box {
-  height: 85px;
+  height: 150px;
   width: 181px;
   border: 1px #ccc solid;
   position: absolute;
@@ -1161,6 +1161,13 @@ and (max-device-width : 480px) {
   color: #666;
 }
 
+#save-box textarea {
+  border: 1px #ccc solid;
+  padding: 2px;
+  width: 180px;
+  color: #666;
+}
+
 #save-box .downloads li {
   margin-top: -4px;
 }
@@ -1170,6 +1177,13 @@ and (max-device-width : 480px) {
   text-decoration: none;
   font-size: 75%;
 }
+
+#save-box a {
+  color: #0E157F;
+  text-decoration: none;
+  font-size: 75%;
+}
+
 
 .tooltip {
   position: absolute;
