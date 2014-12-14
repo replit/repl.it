@@ -38,6 +38,8 @@ $.fn.enableSelection = ->
       'user-select': ''
     $this.each -> this.onselectstart = null
 
+isEmbed = ->
+  window.location.search == "?embed=true"
 
 $.extend REPLIT,
   RESIZER_WIDTH: RESIZER_WIDTH
@@ -52,6 +54,9 @@ $.extend REPLIT,
   last_progress_ratio: 0
   # Initialize the DOM (Runs before JSRPEL's load)
   InitDOM: ->
+    if isEmbed()
+      $("#header").hide()
+      $("#footer").hide()
     @$doc_elem = $ 'html'
     # The main container holding the pages.
     @$container = $ '#main'
@@ -254,7 +259,8 @@ $.extend REPLIT,
     # Calculate container height and width.
     documentWidth = document.documentElement.clientWidth
     documentHeight = document.documentElement.clientHeight
-    height = documentHeight - HEADER_HEIGHT - FOOTER_HEIGHT 
+    height = documentHeight
+    height -= (HEADER_HEIGHT + FOOTER_HEIGHT) unless isEmbed()
     width = documentWidth - @content_padding
     innerWidth = width - 2 * RESIZER_WIDTH
 
