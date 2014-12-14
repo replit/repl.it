@@ -73,6 +73,7 @@ var httpCb = function (req, res) {
 
   if(inMemorySaved[uriFirstPiece]) {
     restoreFakeSession(uriFirstPiece, res);
+    return;
   }
   var filename = path.join(process.cwd(), uri);;
       
