@@ -260,7 +260,8 @@ $.extend REPLIT,
     documentWidth = document.documentElement.clientWidth
     documentHeight = document.documentElement.clientHeight
     height = documentHeight
-    height -= (HEADER_HEIGHT + FOOTER_HEIGHT) unless isEmbed()
+    if !isEmbed()
+      height -= (HEADER_HEIGHT + FOOTER_HEIGHT)
     width = documentWidth - @content_padding
     innerWidth = width - 2 * RESIZER_WIDTH
 
