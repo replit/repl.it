@@ -1,0 +1,18 @@
+<html>
+  <head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <style>
+     div { background: blue; }
+    </style>
+    <script>
+     $(function(){
+       var decodedEmbed = decodeURIComponent(window.location.search.split("=")[1]);
+       $('#embed-preview').html(decodedEmbed);
+     });
+    </script>
+  </head>
+  <body>
+    <div id="embed-preview">
+    </div>
+  </body>
+</html>
